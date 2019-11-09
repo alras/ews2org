@@ -19,3 +19,15 @@ max_items=100
 output_file=/home/user/.org/myCal.org
 calendar_name=My Exchange calendar
 orgmode_labels=:WorkCal:EWScal:
+
+# Status for an item (e.g. TODO or empty):
+orgmode_status_future=TODO
+orgmode_status_current=PROGRESS
+orgmode_status_past=DONE
+orgmode_status_cancel=CANCELLED
+
+# Priorities of items (e.g. [#A] or empty):
+orgmode_priority_default=
+orgmode_priority_high=[#B]
+orgmode_priority_low=[#D]
+

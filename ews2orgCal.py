@@ -25,6 +25,10 @@ config = RawConfigParser({
     'orgmode_status_current': '',       # Default Org mode status current, e.g. PROGRESS
     'orgmode_status_past':    '',       # Default Org mode status past, e.g. DONE
     'orgmode_status_cancel':  '',       # Default Org mode status cancel, e.g. CANCELLED
+    
+    'orgmode_priority_default':  '',       # Default Org mode priority default, e.g. [#B] or empty
+    'orgmode_priority_high':     '',       # Default Org mode priority high, e.g. [#A]
+    'orgmode_priority_low':      '',       # Default Org mode priority low, e.g. [#C]
 })
 dir = os.path.dirname(os.path.realpath(__file__))
 config.read(os.path.join(dir, 'config.cfg'))
@@ -46,23 +50,39 @@ orgStatusCurrent  = config.get(   'ews2org', 'orgmode_status_current')
 orgStatusPast     = config.get(   'ews2org', 'orgmode_status_past')
 orgStatusCancel   = config.get(   'ews2org', 'orgmode_status_cancel')
 
+orgPrioDefault   = config.get(   'ews2org', 'orgmode_priority_default')
+orgPrioHigh      = config.get(   'ews2org', 'orgmode_priority_high')
+orgPrioLow       = config.get(   'ews2org', 'orgmode_priority_low')
+
 # Check settings:
-# print("server:      ",        server)
-# print("username:    ",      username)
-# print("email:       ",  emailAddress)
-# print("password:    ",      password)
-# print("timezone:    ",      timezone)
-# print("daysPast:    ",      daysPast)
-# print("daysFuture:  ",    daysFuture)
-# print("maxItems:    ",      maxItems)
-# print("outFileName: ",   outFileName)
-# print("calName:     ",       calName)
-# print("orgLabels:   ",     orgLabels)
-# print("orgStatusFuture:   ",     orgStatusFuture)
-# print("orgStatusCurrent:  ",     orgStatusCurrent)
-# print("orgStatusPast:     ",     orgStatusPast)
-# print("orgStatusCancel:   ",     orgStatusCancel)
-# print()
+if False:
+    print("server:      ",        server)
+    print("username:    ",      username)
+    print("email:       ",  emailAddress)
+    print("password:    ",      password)
+    print("timezone:    ",      timezone)
+    print()
+    
+    print("daysPast:    ",      daysPast)
+    print("daysFuture:  ",    daysFuture)
+    print("maxItems:    ",      maxItems)
+    
+    print()
+    print("outFileName: ",   outFileName)
+    print("calName:     ",       calName)
+    print("orgLabels:   ",     orgLabels)
+    print()
+    
+    print("orgStatusFuture:   ",     orgStatusFuture)
+    print("orgStatusCurrent:  ",     orgStatusCurrent)
+    print("orgStatusPast:     ",     orgStatusPast)
+    print("orgStatusCancel:   ",     orgStatusCancel)
+    print()
+    
+    print("orgPrioDefault:   ",     orgPrioDefault)
+    print("orgPrioHigh:      ",     orgPrioHigh)
+    print("orgPrioLow:       ",     orgPrioLow)
+    print()
 
 
 # Set up account:
@@ -111,14 +131,25 @@ items = account.calendar.view(start=startDate, end=endDate, max_items=maxItems)
 for item in items:
     item_start = EWSDateTime.astimezone(item.start, tz)  # Start time of item in the desired timezone
     item_end   = EWSDateTime.astimezone(item.end,   tz)  # End time of item in the desired timezone
+    
+    # Set item status (e.g., TODO/DONE/CANCELLED):
     status = orgStatusFuture
     if(now > item_start):
         status = orgStatusCurrent
         if(now > item_end): status = orgStatusPast
     if(item.is_cancelled): status = orgStatusCancel
-    # print(item_start.date(), item_start.time(), item_end.time(), item.subject, item.location, status)
+    if(status != ''): status += ' '
     
-    outFile.write('\n** '+status+' '+item.subject+'\n')
+    prio = orgPrioDefault
+    if(item.importance == 'High'):
+        prio = orgPrioHigh
+    elif(item.importance == 'Low'):
+        prio = orgPrioLow
+    if(prio != ''): prio += ' '
+    
+    # print(item_start.date(), item_start.time(), item_end.time(), item.subject, item.location, status, prio, item.importance)
+        
+    outFile.write('\n** '+status+prio+item.subject+'\n')
     outFile.write(INDENT+'SCHEDULED '+item_start.strftime('<%Y-%m-%d %a %H:%M-')+item_end.strftime('%H:%M>\n'))
     if(item.text_body != None):
         content = str(item.text_body.strip()+'\n')
