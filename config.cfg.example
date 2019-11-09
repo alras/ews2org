@@ -1,0 +1,21 @@
+[ews2org]
+# EWS server:
+server=outlook.office365.com
+
+# The user name may be your email address (e.g. for Office365), GROUP\\user, etc:
+username=GROUP\\user
+email_address=me@here.org
+password=12345strongpw!
+
+# E.g. Europe/Berlin.  Use system timezone if empty.
+timezone=
+
+# Days in the past and future to get calendar items for:
+days_past=30
+days_future=90
+max_items=300
+
+# Output file name, calendar title and orgmode labels for this calendar (:LABEL1:[LABEL2:]):
+output_file=myCal.org
+calendar_name=My Exchange calendar
+orgmode_labels=:WorkCal:EWScal:
