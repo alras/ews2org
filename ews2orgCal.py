@@ -19,7 +19,12 @@ config = RawConfigParser({
     'max_items':      100,
     'output_file':    'myCalendar.org',
     'calendar_name':  'My calendar',
-    'orgmode_labels': ':Org:ews2cal:'  # Org mode labels
+    'orgmode_labels': ':Org:ews2cal:',  # Org mode labels
+    
+    'orgmode_status_future':  '',       # Default Org mode status future, e.g. TODO
+    'orgmode_status_current': '',       # Default Org mode status current, e.g. PROGRESS
+    'orgmode_status_past':    '',       # Default Org mode status past, e.g. DONE
+    'orgmode_status_cancel':  '',       # Default Org mode status cancel, e.g. CANCELLED
 })
 dir = os.path.dirname(os.path.realpath(__file__))
 config.read(os.path.join(dir, 'config.cfg'))
@@ -36,6 +41,11 @@ outFileName   = config.get(   'ews2org',    'output_file')
 calName       = config.get(   'ews2org',  'calendar_name')
 orgLabels     = config.get(   'ews2org', 'orgmode_labels')
 
+orgStatusFuture   = config.get(   'ews2org', 'orgmode_status_future')
+orgStatusCurrent  = config.get(   'ews2org', 'orgmode_status_current')
+orgStatusPast     = config.get(   'ews2org', 'orgmode_status_past')
+orgStatusCancel   = config.get(   'ews2org', 'orgmode_status_cancel')
+
 # Check settings:
 # print("server:      ",        server)
 # print("username:    ",      username)
@@ -48,6 +58,10 @@ orgLabels     = config.get(   'ews2org', 'orgmode_labels')
 # print("outFileName: ",   outFileName)
 # print("calName:     ",       calName)
 # print("orgLabels:   ",     orgLabels)
+# print("orgStatusFuture:   ",     orgStatusFuture)
+# print("orgStatusCurrent:  ",     orgStatusCurrent)
+# print("orgStatusPast:     ",     orgStatusPast)
+# print("orgStatusCancel:   ",     orgStatusCancel)
 # print()
 
 
@@ -97,9 +111,14 @@ items = account.calendar.view(start=startDate, end=endDate, max_items=maxItems)
 for item in items:
     item_start = EWSDateTime.astimezone(item.start, tz)  # Start time of item in the desired timezone
     item_end   = EWSDateTime.astimezone(item.end,   tz)  # End time of item in the desired timezone
-    #print(item_start.date(), item_start.time(), item_end.time(), item.subject, item.location)
+    status = orgStatusFuture
+    if(now > item_start):
+        status = orgStatusCurrent
+        if(now > item_end): status = orgStatusPast
+    if(item.is_cancelled): status = orgStatusCancel
+    # print(item_start.date(), item_start.time(), item_end.time(), item.subject, item.location, status)
     
-    outFile.write('\n** '+item.subject+'\n')
+    outFile.write('\n** '+status+' '+item.subject+'\n')
     outFile.write(INDENT+'SCHEDULED '+item_start.strftime('<%Y-%m-%d %a %H:%M-')+item_end.strftime('%H:%M>\n'))
     if(item.text_body != None):
         content = str(item.text_body.strip()+'\n')
