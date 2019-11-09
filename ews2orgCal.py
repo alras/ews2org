@@ -31,7 +31,7 @@ config = RawConfigParser({
     'orgmode_priority_low':      '',       # Default Org mode priority low, e.g. [#C]
 })
 dir = os.path.dirname(os.path.realpath(__file__))
-config.read(os.path.join(dir, 'config.cfg'))
+config.read(os.path.join(dir, 'ews2org.cfg'))
 
 server        = config.get(   'ews2org',         'server')
 username      = config.get(   'ews2org',       'username')
