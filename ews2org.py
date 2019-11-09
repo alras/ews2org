@@ -4,11 +4,11 @@
 
 # https://stackoverflow.com/a/46649097/1386750
 from exchangelib import DELEGATE, Account, Credentials, Configuration, EWSDateTime, EWSTimeZone
+from datetime import timedelta
 from configparser import RawConfigParser
 import os
 
 # Read the config file:
-timezoneLocation = os.getenv('TZ', 'UTC')
 config = RawConfigParser({
     'username':       '',
     'email_address':  '',
@@ -24,32 +24,32 @@ config = RawConfigParser({
 dir = os.path.dirname(os.path.realpath(__file__))
 config.read(os.path.join(dir, 'config.cfg'))
 
-server        = config.get(   'ews2org', 'server')
-username      = config.get(   'ews2org', 'username')
-emailAddrsss  = config.get(   'ews2org', 'email_address')
-password      = config.get(   'ews2org', 'password')
-timezone      = config.get(   'ews2org', 'timezone')
-daysPast      = config.getint('ews2org', 'days_past')
-daysFuture    = config.getint('ews2org', 'days_future')
-maxItems      = config.getint('ews2org', 'max_items')
-outFileName   = config.get(   'ews2org', 'output_file')
-calName       = config.get(   'ews2org', 'calendar_name')
+server        = config.get(   'ews2org',         'server')
+username      = config.get(   'ews2org',       'username')
+emailAddress  = config.get(   'ews2org',  'email_address')
+password      = config.get(   'ews2org',       'password')
+timezone      = config.get(   'ews2org',       'timezone')
+daysPast      = config.getint('ews2org',      'days_past')
+daysFuture    = config.getint('ews2org',    'days_future')
+maxItems      = config.getint('ews2org',      'max_items')
+outFileName   = config.get(   'ews2org',    'output_file')
+calName       = config.get(   'ews2org',  'calendar_name')
 orgLabels     = config.get(   'ews2org', 'orgmode_labels')
 
-print("server",        server)
-print("username",      username)
-print("email",         emailAddrsss)
-print("password",      password)
-print("timezone",      timezone)
-print("daysPast",      daysPast)
-print("daysFuture",    daysFuture)
-print("maxItems",      maxItems)
-print("outFileName",   outFileName)
-print("calName",       calName)
-print("orgLabels",     orgLabels)
-print()
+# Check settings:
+# print("server:      ",        server)
+# print("username:    ",      username)
+# print("email:       ",  emailAddress)
+# print("password:    ",      password)
+# print("timezone:    ",      timezone)
+# print("daysPast:    ",      daysPast)
+# print("daysFuture:  ",    daysFuture)
+# print("maxItems:    ",      maxItems)
+# print("outFileName: ",   outFileName)
+# print("calName:     ",       calName)
+# print("orgLabels:   ",     orgLabels)
+# print()
 
-#exit(0)
 
 # Set up account:
 creds = Credentials(
@@ -60,17 +60,22 @@ creds = Credentials(
 config = Configuration(server=server, credentials=creds)
 
 account = Account(
-    primary_smtp_address=emailAddrsss,
+    primary_smtp_address=emailAddress,
     autodiscover=False, 
     config=config,
     access_type=DELEGATE
 )
 
 
+# Start and end date to fetch calendar items for:
+now       = account.default_timezone.localize(EWSDateTime.now())
+startDate = now - timedelta(days=daysPast)
+endDate   = now + timedelta(days=daysFuture)
+# startDate = account.default_timezone.localize(EWSDateTime(2019, 11, 7))
+# endDate   = account.default_timezone.localize(EWSDateTime(2019, 11, 8))
 
-startTime = account.default_timezone.localize(EWSDateTime(2019, 11, 7))
-endTime = account.default_timezone.localize(EWSDateTime(2019, 11, 8))
 
+# Desired timezone:
 if timezone=='':
     tz = EWSTimeZone.localzone()
 else:
@@ -88,10 +93,10 @@ outFile = open(outFileName, 'w')
 outFile.write('* '+calName+'  '+orgLabels+'\n')
 
 INDENT=''
-items = account.calendar.view(start=startTime, end=endTime, max_items=maxItems)
+items = account.calendar.view(start=startDate, end=endDate, max_items=maxItems)
 for item in items:
-    item_start = EWSDateTime.astimezone(item.start,tz)
-    item_end = EWSDateTime.astimezone(item.end,tz)
+    item_start = EWSDateTime.astimezone(item.start, tz)  # Start time of item in the desired timezone
+    item_end   = EWSDateTime.astimezone(item.end,   tz)  # End time of item in the desired timezone
     #print(item_start.date(), item_start.time(), item_end.time(), item.subject, item.location)
     
     outFile.write('\n** '+item.subject+'\n')
