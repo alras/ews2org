@@ -151,6 +151,8 @@ for item in items:
         
     outFile.write('\n** '+status+prio+item.subject+'\n')
     outFile.write(INDENT+'SCHEDULED '+item_start.strftime('<%Y-%m-%d %a %H:%M-')+item_end.strftime('%H:%M>\n'))
+    
+    # Body:
     if(item.text_body != None):
         content = str(item.text_body.strip()+'\n')
         #print(type(content))
@@ -181,7 +183,7 @@ for item in items:
     
     # Metadata:
     #if(item.location != None):
-    outFile.write(INDENT+':LOCATION: '+str(item.location)+'\n')
+    outFile.write(INDENT+':LOCATION:   '+str(item.location)+'\n')
     
     if(item.my_response_type != None):
         outFile.write(INDENT+':RESPONSE:   '+str(item.my_response_type)+'\n')
