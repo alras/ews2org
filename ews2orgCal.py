@@ -150,7 +150,7 @@ for item in items:
     # print(item_start.date(), item_start.time(), item_end.time(), item.subject, item.location, status, prio, item.importance)
         
     outFile.write('\n** '+status+prio+item.subject+'\n')
-    outFile.write(INDENT+'SCHEDULED: '+item_start.strftime('<%Y-%m-%d %a %H:%M-')+item_end.strftime('%H:%M>\n'))
+    outFile.write(INDENT+item_start.strftime('<%Y-%m-%d %a %H:%M-')+item_end.strftime('%H:%M>\n'))
     
     # Body:
     if(item.text_body != None):
