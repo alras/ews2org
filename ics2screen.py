@@ -83,9 +83,12 @@ for component in cal.walk():
         count = 0
         attendees = component.get('attendee')
         if(attendees != None):
-            for attendee in attendees:
-                count +=1 
-                print(colored('Attendee '+str(count)+':    ', 'green', attrs=['bold']), attendee.replace('MAILTO:',''))
+            if(type(attendees) == list):
+                for attendee in attendees:
+                    count +=1 
+                    print(colored('Attendee '+str(count)+':    ', 'green', attrs=['bold']), attendee.replace('MAILTO:',''))
+            else:  # if(type(attendees) == (icalendar.Calendar.)prop.vCalAddress):
+                print(colored('Attendee:    ', 'green', attrs=['bold']), attendees.replace('MAILTO:',''))
         
         # Creation date:
         created = component.get('dtstamp')

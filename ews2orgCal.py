@@ -224,13 +224,13 @@ for item in items:
         outFile.write(INDENT+':HEADERS:    '+str(item.headers)+'\n')
         
     if(item.datetime_created != None):
-        outFile.write(INDENT+':CREATED:     '+item.datetime_created.strftime('[%Y-%m-%d %a %H:%M] \n'))
+        outFile.write(INDENT+':CREATED:    '+item.datetime_created.strftime('[%Y-%m-%d %a %H:%M] \n'))
         
     if(item.web_client_read_form_query_string != None):
-        outFile.write(INDENT+':LINK:        [['+item.web_client_read_form_query_string+'][Outlook]] \n')
+        outFile.write(INDENT+':LINK:       [['+item.web_client_read_form_query_string+'][Outlook]] \n')
         
     if(item.web_client_edit_form_query_string != None):
-        outFile.write(INDENT+':LINK:        [['+item.web_client_edit_form_query_string+'][Outlook edit]] \n')
+        outFile.write(INDENT+':LINK:       [['+item.web_client_edit_form_query_string+'][Outlook edit]] \n')
     
     # if(item.XXX != None):
     #     outFile.write(INDENT+':XXX: '+str(item.XXX)+'\n')
