@@ -75,21 +75,34 @@ for component in cal.walk():
         print()
         
         # Location:
-        print(colored('Location:    ', 'green', attrs=['bold']), component.get('location'))
-        print()
+        location = component.get('location')
+        if(location != '' and location != None):
+            print(colored('Location:    ', 'green', attrs=['bold']), component.get('location'))
+            print()
         
         # Organiser and attendees:
-        print(colored('Organiser:   ', 'green', attrs=['bold']), component.get('organizer').replace('MAILTO:',''))
+        organiser = component.get('organizer')
+        if(type(organiser) == str):  # Can only .replace() on string
+            print(colored('Organiser:   ', 'green', attrs=['bold']), organiser.replace('MAILTO:',''))
+        elif(organiser != None):
+            print(colored('Organiser:   ', 'green', attrs=['bold']), organiser)
+            
         count = 0
         attendees = component.get('attendee')
         if(attendees != None):
             if(type(attendees) == list):
                 for attendee in attendees:
                     count +=1 
-                    print(colored('Attendee '+str(count)+':    ', 'green', attrs=['bold']), attendee.replace('MAILTO:',''))
-            else:  # if(type(attendees) == (icalendar.Calendar.)prop.vCalAddress):
-                print(colored('Attendee:    ', 'green', attrs=['bold']), attendees.replace('MAILTO:',''))
-        
+                    if(type(attendee) == str):  # Can only .replace() on string
+                        print(colored('Attendee '+str(count)+':    ', 'green', attrs=['bold']), attendee.replace('MAILTO:',''))
+                    else:
+                        print(colored('Attendee '+str(count)+':    ', 'green', attrs=['bold']), attendee)
+            else:  # if(type(attendees) == (icalendar.Calendar.)prop.vCalAddress), probably == single attendee:
+                if(type(attendees) == str):  # Can only .replace() on string
+                    print(colored('Attendee:    ', 'green', attrs=['bold']), attendees.replace('MAILTO:',''))
+                else:
+                    print(colored('Attendee:    ', 'green', attrs=['bold']), attendees)
+                    
         # Creation date:
         created = component.get('dtstamp')
         if(created != None):
