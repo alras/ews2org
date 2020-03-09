@@ -11,8 +11,12 @@ See:
 
 # https://stackoverflow.com/a/8907269/1386750
 from string import Template
+
+
 class DeltaTemplate(Template):
     delimiter = "%"
+
+
 def strfdelta(tdelta, fmt):
     """strftime() for timedelta."""
     d = {"D": tdelta.days}
@@ -24,8 +28,7 @@ def strfdelta(tdelta, fmt):
     return t.substitute(**d)
 
 
-
-### MAIN ###
+# ### MAIN ###
 
 from icalendar import Calendar
 from termcolor import colored
@@ -63,20 +66,20 @@ for component in cal.walk():
         # Date and start and end time:
         startTime = component.get('dtstart')
         endTime = component.get('dtend')
-        if(startTime != None):
+        if(startTime is not None):
             print(colored('Date:        ', 'green', attrs=['bold']), startTime.dt.strftime('%A %d %B %Y (week %V)'))
             print(colored('Start time:  ', 'green', attrs=['bold']), startTime.dt.strftime('%H:%M %Z'))
-        elif(endTime != None):
+        elif(endTime is not None):
             print(colored('Date:        ', 'green', attrs=['bold']), endTime.dt.strftime('%A %d %B %Y (week %V)'))
-        if(endTime != None):
+        if(endTime is not None):
             print(colored('End time:    ', 'green', attrs=['bold']), endTime.dt.strftime('%H:%M %Z'))
-        if(startTime != None and endTime != None):
+        if(startTime is not None and endTime is not None):
             print(colored('Duration:    ', 'green', attrs=['bold']), strfdelta(endTime.dt - startTime.dt, "%H:%M"))
         print()
         
         # Location:
         location = component.get('location')
-        if(location != '' and location != None):
+        if(location != '' and location is not None):
             print(colored('Location:    ', 'green', attrs=['bold']), component.get('location'))
             print()
         
@@ -84,12 +87,12 @@ for component in cal.walk():
         organiser = component.get('organizer')
         if(type(organiser) == str):  # Can only .replace() on string
             print(colored('Organiser:   ', 'green', attrs=['bold']), organiser.replace('MAILTO:',''))
-        elif(organiser != None):
+        elif(organiser is not None):
             print(colored('Organiser:   ', 'green', attrs=['bold']), organiser)
             
         count = 0
         attendees = component.get('attendee')
-        if(attendees != None):
+        if(attendees is not None):
             if(type(attendees) == list):
                 for attendee in attendees:
                     count +=1 
@@ -105,7 +108,7 @@ for component in cal.walk():
                     
         # Creation date:
         created = component.get('dtstamp')
-        if(created != None):
+        if(created is not None):
             print()
             print(colored('Created:     ', 'green', attrs=['bold']), created.dt.strftime('%A %d %B %Y, %H:%M:%S %Z'))
         

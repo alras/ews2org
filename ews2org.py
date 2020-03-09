@@ -5,7 +5,7 @@ import os
 
 
 def readConfigFile(debug=False):
-    """Read the config file ews2org,cnf"""
+    """Read the config file ews2org.cnf"""
     
     config = RawConfigParser({
         'username':       '',

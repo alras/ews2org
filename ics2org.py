@@ -1,6 +1,6 @@
 #!/bin/env python3
 
-"""Read an ics/ical (=vcs/vcal?) iCalendar file and write the most important contents to 
+"""Read an ics/ical (=vcs/vcal?) iCalendar file and write the most important contents to
   an emacs orgmode file with extension .org.
 
 See:
@@ -25,11 +25,9 @@ def strfdelta(tdelta, fmt):
     return t.substitute(**d)
 
 
-
 ### MAIN ###
 
 from icalendar import Calendar
-from termcolor import colored
 from sys import argv
 
 # Get the input file name:
