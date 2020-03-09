@@ -66,16 +66,28 @@ for component in cal.walk():
         # Date and start and end time:
         startTime = component.get('dtstart')
         endTime = component.get('dtend')
+        duration = 0
+        if(startTime is not None and endTime is not None): duration = endTime.dt - startTime.dt
+        
         if(startTime is not None):
-            print(colored('Date:        ', 'green', attrs=['bold']), startTime.dt.strftime('%A %d %B %Y (week %V)'))
+            if(duration.days > 1):
+                print(colored('Start date:  ', 'green', attrs=['bold']), startTime.dt.strftime('%A %d %B %Y (week %V)'))
+            else:
+                print(colored('Date:        ', 'green', attrs=['bold']), startTime.dt.strftime('%A %d %B %Y (week %V)'))
             print(colored('Start time:  ', 'green', attrs=['bold']), startTime.dt.strftime('%H:%M %Z'))
         elif(endTime is not None):
             print(colored('Date:        ', 'green', attrs=['bold']), endTime.dt.strftime('%A %d %B %Y (week %V)'))
         if(endTime is not None):
+            if(duration.days > 1):
+                print(colored('End date:    ', 'green', attrs=['bold']), endTime.dt.strftime('%A %d %B %Y (week %V)'))
             print(colored('End time:    ', 'green', attrs=['bold']), endTime.dt.strftime('%H:%M %Z'))
         if(startTime is not None and endTime is not None):
-            print(colored('Duration:    ', 'green', attrs=['bold']), strfdelta(endTime.dt - startTime.dt, "%H:%M"))
+            if(duration.days > 1):
+                print(colored('Duration:    ', 'green', attrs=['bold']), strfdelta(endTime.dt - startTime.dt, "%D days, %H:%M"))
+            else:
+                print(colored('Duration:    ', 'green', attrs=['bold']), strfdelta(endTime.dt - startTime.dt, "%H:%M"))
         print()
+        
         
         # Location:
         location = component.get('location')
