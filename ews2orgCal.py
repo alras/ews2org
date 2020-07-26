@@ -7,7 +7,7 @@ from exchangelib import EWSDateTime, EWSTimeZone
 from datetime import timedelta
 
 from ews2org import readConfigFile, setupAccount
-
+import htmlstrip
 
 # Read the config file:
 server, username, emailAddress, password, timezone, daysPast, daysFuture, \
@@ -76,10 +76,12 @@ for item in items:
         content = str(item.text_body.strip()+'\n')
         #print(type(content))
         #content = content.replace(WINDOWS_LINE_ENDING, UNIX_LINE_ENDING)
-        outFile.write(content)
+        #outFile.write(content)
+        outFile.write(htmlstrip.strip_tags(content))
     elif(item.body != None):
-        outFile.write(item.body.strip()+'\n')
-    
+        #outFile.write(item.body.strip()+'\n')
+        outFile.write(htmlstrip.strip_tags(item.body.strip()+'\n'))
+
     outFile.write(INDENT+':PROPERTIES:\n')
     
     # People:
