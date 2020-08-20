@@ -37,8 +37,8 @@ else:
 
 # # Line-ending replacement strings:
 # # https://stackoverflow.com/a/43678795/1386750
-# WINDOWS_LINE_ENDING = b'\r\n'
-# UNIX_LINE_ENDING = b'\n'
+WINDOWS_LINE_ENDING = str('\r\n')
+UNIX_LINE_ENDING = str('\n')
 
 
 # Open output file and write header line with calendar name and orgmode labels:
@@ -75,12 +75,17 @@ for item in items:
     if(item.text_body != None):
         content = str(item.text_body.strip()+'\n')
         #print(type(content))
-        #content = content.replace(WINDOWS_LINE_ENDING, UNIX_LINE_ENDING)
-        #outFile.write(content)
-        outFile.write(htmlstrip.strip_tags(content))
+        content = content.replace(WINDOWS_LINE_ENDING, UNIX_LINE_ENDING)
+        outFile.write(content)
+        #outFile.write(htmlstrip.strip_tags(content))
     elif(item.body != None):
         #outFile.write(item.body.strip()+'\n')
-        outFile.write(htmlstrip.strip_tags(item.body.strip()+'\n'))
+        content = str(item.body.strip()+'\n')
+        # print("Content: "+content )
+        # print(type(content))
+        content = content.replace(WINDOWS_LINE_ENDING, UNIX_LINE_ENDING)
+        #outFile.write(content)
+        outFile.write(htmlstrip.strip_tags(content))
 
     outFile.write(INDENT+':PROPERTIES:\n')
     
