@@ -9,21 +9,31 @@ See:
 
 """
 
+# PYTHON_ARGCOMPLETE_OK
+import argparse
+import argcomplete
+from icalendar import Calendar
 
-# ### MAIN ###
+
 def main():
-    from icalendar import Calendar
-    from sys import argv
+    """Main function."""
     
-    # Get the input file name:
-    if(len(argv) <= 1):
-        print("Syntax: "+argv[0]+" <ics/vcs file>")
-        exit(1)
+    # Parse command-line arguments:
+    parser = argparse.ArgumentParser(description="Convert an .ics or .vcs calendar file to an orgmode agenda file.", 
+                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)  # Use capital, period, add default values
     
-    inFile = argv[1]  # Should be ics?  vcs also seems to work.
+    # Required arguments:
+    parser.add_argument("inFile", type=str, default=None, help=".ics or .vcs file name")
+    
+    # Optional arguments
+    parser.add_argument("-q", "--quiet",   action="store_true", help="be quiet; produce no output")  # Default = False
+    
+    argcomplete.autocomplete(parser)
+    args = parser.parse_args()
     
     
     # Open the input file and read it:
+    inFile = args.inFile
     try:
         file = open(inFile, 'rb')
     except Exception as e:
@@ -37,7 +47,8 @@ def main():
     outFile = outFile.replace('.vcs', '.org')
     if(outFile == inFile): outFile = inFile+".org"
     
-    print(inFile, outFile)
+    if(not args.quiet):
+        print(inFile, outFile)
     
     
     # Open the outfile for writing:
