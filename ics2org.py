@@ -12,20 +12,23 @@ See:
 
 # https://stackoverflow.com/a/8907269/1386750
 from string import Template
+
+
 class DeltaTemplate(Template):
     delimiter = "%"
-def strfdelta(tdelta, fmt):
-    """strftime() for timedelta."""
-    d = {"D": tdelta.days}
-    d["H"], rem = divmod(tdelta.seconds, 3600)
-    d["M"], d["S"] = divmod(rem, 60)
-    for label in ("H","M","S"):
-        d[label] = "%2.2i" % (d[label])
-    t = DeltaTemplate(fmt)
-    return t.substitute(**d)
+
+    def strfdelta(tdelta, fmt):
+        """strftime() for timedelta."""
+        d = {"D": tdelta.days}
+        d["H"], rem = divmod(tdelta.seconds, 3600)
+        d["M"], d["S"] = divmod(rem, 60)
+        for label in ("H","M","S"):
+            d[label] = "%2.2i" % (d[label])
+        t = DeltaTemplate(fmt)
+        return t.substitute(**d)
 
 
-### MAIN ###
+# ### MAIN ###
 
 from icalendar import Calendar
 from sys import argv
@@ -77,21 +80,21 @@ for component in cal.walk():
         # Date and start and end time:
         startTime = component.get('dtstart')
         endTime   = component.get('dtend')
-        if(startTime != None):
+        if(startTime is not None):
             file.write(startTime.dt.strftime('<%Y-%m-%d %a '))
             file.write(startTime.dt.strftime('%H:%M'))
-        elif(endTime != None):
+        elif(endTime is not None):
             file.write(endTime.dt.strftime('<%Y-%m-%d %a '))
-        if(endTime != None):
+        if(endTime is not None):
             if(startTime != endTime):
-                if(startTime != None):
+                if(startTime is not None):
                     file.write('-')
                 file.write(endTime.dt.strftime('%H:%M'))
         file.write('>\n')
         
         # Location:
         location = component.get('location')
-        if(location != '' and location != None):
+        if(location != '' and location is not None):
             if(not props):
                 file.write(":PROPERTIES:\n")
                 props = True
@@ -104,7 +107,7 @@ for component in cal.walk():
                 file.write(":PROPERTIES:\n")
                 props = True
             file.write(':ORGANISER:   '+organiser.replace('MAILTO:','')+"\n")
-        elif(organiser != None):
+        elif(organiser is not None):
             if(not props):
                 file.write(":PROPERTIES:\n")
                 props = True
@@ -112,7 +115,7 @@ for component in cal.walk():
             
         count = 0
         attendees = component.get('attendee')
-        if(attendees != None):
+        if(attendees is not None):
             if(type(attendees) == list):
                 for attendee in attendees:
                     count +=1 
@@ -140,7 +143,7 @@ for component in cal.walk():
                     
         # Creation date:
         created = component.get('dtstamp')
-        if(created != None):
+        if(created is not None):
             if(not props):
                 file.write(":PROPERTIES:\n")
                 props = True
