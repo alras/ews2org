@@ -66,8 +66,10 @@ for item in items:
         prio = orgPrioLow
     if(prio != ''): prio += ' '
     
-    # print(item_start.date(), item_start.time(), item_end.time(), item.subject, item.location, status, prio, item.importance)
-        
+    #print(item_start.date(), item_start.time(), item_end.time(), item.subject, item.location, status, prio, item.importance)
+    if(item.subject == None):
+        item.subject = "Empty"
+    
     outFile.write('\n** '+status+prio+item.subject+'\n')
     outFile.write(INDENT+item_start.strftime('<%Y-%m-%d %a %H:%M-')+item_end.strftime('%H:%M>\n'))
     
@@ -84,8 +86,8 @@ for item in items:
         # print("Content: "+content )
         # print(type(content))
         content = content.replace(WINDOWS_LINE_ENDING, UNIX_LINE_ENDING)
-        #outFile.write(content)
-        outFile.write(htmlstrip.strip_tags(content))
+        outFile.write(content)
+        #outFile.write(htmlstrip.strip_tags(content))
 
     outFile.write(INDENT+':PROPERTIES:\n')
     
